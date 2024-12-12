@@ -11,30 +11,38 @@ public class FPSController : NetworkBehaviour
     public float runSpeed = 12f;
     public float jumpPower = 7f;
     public float gravity = 10f;
-
-
     public float lookSpeed = 2f;
     public float lookXLimit = 45f;
 
-
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
-
     public bool canMove = true;
 
-
     CharacterController characterController;
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+
+        if (IsOwner)
+        {
+            // Activa la cámara del jugador local
+            playerCamera.gameObject.SetActive(true);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            // Desactiva la cámara de los jugadores remotos
+            playerCamera.gameObject.SetActive(false);
+        }
     }
 
     void Update()
     {
+        if (!IsOwner) return;
 
-        #region Handles Movment
+        #region Handles Movement
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
